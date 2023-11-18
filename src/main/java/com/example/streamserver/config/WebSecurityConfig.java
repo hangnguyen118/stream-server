@@ -21,7 +21,8 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
     private static final String[] WHITE_LIST_URL = {
-            "/api/auth/**"
+            "/api/auth/**",
+            "/api/stream/**"
     };
 
     private static final String[] USER_LIST_URL = {
@@ -48,7 +49,7 @@ public class WebSecurityConfig {
                 .csrf(csrf->csrf.disable())
                 .cors(cors->cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(List.of("*"));
+                    configuration.setAllowedOrigins(List.of("http://localhost", "http://localhost:63342", "http://192.168.1.76", "http://10.13.129.31"));
                     configuration.setAllowedMethods(List.of("HEAD","GET","POST","PUT","DELETE","PATCH","OPTIONS"));
                     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     configuration.setAllowCredentials(true);
