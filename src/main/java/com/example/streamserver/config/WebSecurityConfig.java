@@ -1,13 +1,18 @@
 package com.example.streamserver.config;
 
+import com.example.streamserver.service.CustomUserDetailsService;
 import com.example.streamserver.service.JwtAuthFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +24,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
     private static final String[] WHITE_LIST_URL = {
             "/api/auth/**",
@@ -27,22 +33,43 @@ public class WebSecurityConfig {
 
     private static final String[] USER_LIST_URL = {
             "/api/user/**",
-};
+    };
+    private static final String[] ADMIN_LIST_URL = {
+            "/api/admin/**",
+    };
 
-    @Autowired
-    JwtAuthFilter jwtAuthFilter;
-    @Autowired
-    private AuthenticationConfiguration authenticationConfiguration;
+    private final JwtAuthFilter jwtAuthFilter;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
 
+
+//    @Bean
+//    public AuthenticationManager authenticationManager() throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
+//    }
+    @Bean
+    public AuthenticationManager authenticationManager(UserDetailsService customUserDetailsService) {
+
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customUserDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+
+        List<AuthenticationProvider> providers =  List.of(authProvider);
+
+        return new ProviderManager(providers);
+    }
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(customUserDetailsService);
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//        return authProvider;
+//    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -60,9 +87,11 @@ public class WebSecurityConfig {
                 }))
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(WHITE_LIST_URL).permitAll()
-                                .requestMatchers(USER_LIST_URL).hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers("/api/user/**").hasRole("USER")
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout((logout) -> logout.permitAll());
         ;
         return http.build();
     }

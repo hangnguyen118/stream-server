@@ -1,31 +1,23 @@
 package com.example.streamserver.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.util.Set;
+import java.util.UUID;
+@Data
 @Entity
 @Table(name="App_Role", uniqueConstraints = {@UniqueConstraint(name = "APP_ROLE_UK", columnNames = "Role_Name")})
 public class AppRole {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="Role_Id", nullable = false)
-    private Long roleId;
+    private UUID roleId;
+
 
     @Column(name="Role_Name", length=32, nullable = false)
-    private String rolename;
+    private String roleName;
 
-    public Long getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
-    public String getRolename() {
-        return rolename;
-    }
-
-    public void setRolename(String rolename) {
-        this.rolename = rolename;
-    }
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 }

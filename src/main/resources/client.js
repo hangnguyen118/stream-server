@@ -13,7 +13,7 @@ function connect(event) {
     username = usernameInput.value;
     if(username) {
       //var ws = new SockJS('http://localhost:8080/api/auth/ws');
-         const ws = new WebSocket('ws://localhost:8080/api/auth/ws');
+         const ws = new WebSocket('http://192.168.1.76:8080/ws');
       ws.onopen = () => {
         ws.send("hello client ket noi server"); 
       };

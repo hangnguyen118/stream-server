@@ -6,8 +6,12 @@ package com.example.streamserver.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.NaturalId;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -18,9 +22,9 @@ import java.util.Set;
 @Table(name="User", uniqueConstraints = {@UniqueConstraint(name="USER_UK", columnNames = "User_Name")})
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="User_Id", nullable = false)
-    private Long userId;
+    private UUID userId;
 
     @Column(name="User_Name", length = 64, nullable = false)
     private String username;
@@ -37,9 +41,10 @@ public class User {
     @Column(name="Enable", length = 1, nullable = false)
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "roleId"))
-    private Set<AppRole> roles;
+    private AppRole roles;
+
 }

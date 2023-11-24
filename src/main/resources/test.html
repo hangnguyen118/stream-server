@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <!-- Th�m thu vi?n SockJS v� STOMP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <!-- Th�m thu vi?n jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+<h1>WebSocket Chat</h1>
+
+<form id="messageForm">
+    <label for="message">Message:</label>
+    <input type="text" id="message" autocomplete="off">
+    <button type="submit">Send</button>
+</form>
+
+<div id="messages"></div>
+
+
+<!--<video id="videoPlayer" width="640" height="360" controls>-->
+<!--    Your browser does not support the video tag.-->
+<!--</video>-->
+<video width="640" height="360" controls>
+    <source src="http://192.168.1.76:8080/api/auth/video/v1?sourceuri=cookingvideo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+<!--<script>-->
+<!--        // Hàm để gọi API và cập nhật video player-->
+<!--        function loadVideo() {-->
+<!--            // Gọi API controller và nhận dữ liệu video-->
+<!--            fetch('http://192.168.1.76:8080/api/auth/video/stream?sourceuri=video1.mov')-->
+<!--                .then(response => response.blob())-->
+<!--                .then(blob => {-->
+<!--                    // Tạo đường dẫn blob cho video-->
+<!--                    const videoBlob = URL.createObjectURL(blob);-->
+
+<!--                    // Cập nhật đường dẫn video-->
+<!--                    const videoPlayer = document.getElementById('videoPlayer');-->
+<!--                    videoPlayer.src = videoBlob;-->
+<!--                })-->
+<!--                .catch(error => {-->
+<!--                    console.error('Error:', error);-->
+<!--                });-->
+<!--        }-->
+
+<!--        // Gọi hàm khi trang tải-->
+<!--        window.onload = loadVideo;-->
+<!--    </script>-->
+
+<script>
+    // K?t n?i t?i server WebSocket th�ng qua SockJS v� STOMP
+    const socket = new SockJS('http://192.168.1.76:8080/api/auth/ws');
+    const stompClient = Stomp.over(socket);
+
+    // Khi k?t n?i th�nh c�ng
+    stompClient.connect({}, function () {
+        console.log('Connected to WebSocket');
+        
+        // Subscribe d? nh?n tin nh?n t? server tr�n ch? d? '/messages'
+        stompClient.subscribe('/messages', function (message) {
+            displayMessage(JSON.parse(message.body).content);
+        });
+    });
+
+    // X? l� s? ki?n khi g?i form
+    $('#messageForm').submit(function (event) {
+        event.preventDefault();
+        const messageInput = $('#message');
+        const message = messageInput.val();
+        
+        // G?i tin nh?n t?i server tr�n ch? d? '/messages'
+        stompClient.send('/messages/send', {}, JSON.stringify({ 'content': message }));
+
+        // X�a n?i dung input
+        messageInput.val('');
+    });
+
+    // Hi?n th? tin nh?n l�n giao di?n
+    function displayMessage(message) {
+        $('#messages').append('<p>' + message + '</p>');
+    }
+</script>
+
+</body>
+</html>

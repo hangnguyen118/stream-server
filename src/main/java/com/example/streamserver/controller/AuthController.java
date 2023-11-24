@@ -7,6 +7,7 @@ import com.example.streamserver.service.CustomUserDetailsService;
 import com.example.streamserver.service.JwtService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,24 +23,14 @@ import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    CustomUserDetailsService userDetailsService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AppRoleRepository roleRepository;
-
-    @Autowired
-    JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AppRoleRepository roleRepository;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticateUser(@RequestBody LoginDto loginDto, HttpServletResponse response){
@@ -73,8 +64,8 @@ public class AuthController {
         user.setPhone(signUpDto.getPhone());
         user.setEnabled(true);
 
-        AppRole roles = roleRepository.findByRolename("USER").get();
-        user.setRoles(Collections.singleton(roles));
+        AppRole roles = roleRepository.findByRoleName("USER").get();
+        user.setRoles(roles);
         userRepository.save(user);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
