@@ -1,6 +1,5 @@
 package com.example.streamserver.controller;
 
-import com.example.streamserver.dto.RoleDto;
 import com.example.streamserver.dto.VideoDto;
 import com.example.streamserver.entity.*;
 import com.example.streamserver.repository.UserRepository;
@@ -25,7 +24,7 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/videos")
 public class VideoController {
     private final VideoService videoService;
     private final VideoRepository videoRepository;
@@ -78,12 +77,11 @@ public class VideoController {
 //                .contentType(MediaType.APPLICATION_OCTET_STREAM)
 //                .body(video);
 //    }
-    @GetMapping("/v1")
+    @GetMapping("/watch")
     public ResponseEntity<FileSystemResource> getVideo(@RequestParam(name = "sourceuri") String sourceUri) {
         String filePath = "D:\\NetBeansProjects\\stream-server\\src\\main\\resources\\videos\\"+sourceUri;
         File file = new File(filePath);
         FileSystemResource resource = new FileSystemResource(file);
-
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=" + file.getName());

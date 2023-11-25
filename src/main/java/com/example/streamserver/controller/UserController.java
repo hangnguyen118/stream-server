@@ -5,7 +5,6 @@ import com.example.streamserver.entity.AppRole;
 import com.example.streamserver.entity.Category;
 import com.example.streamserver.entity.User;
 import com.example.streamserver.entity.Video;
-import com.example.streamserver.repository.AppRoleRepository;
 import com.example.streamserver.repository.CategoryRepository;
 import com.example.streamserver.repository.UserRepository;
 import com.example.streamserver.repository.VideoRepository;
@@ -27,7 +26,7 @@ public class UserController {
     private final CategoryRepository categoryRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final UserRepository userRepository;
-    private final AppRoleRepository appRoleRepository;
+//    private final AppRoleRepository appRoleRepository;
     private final VideoRepository videoRepository;
     private final VideoService videoService;
     @GetMapping("/getall")
@@ -37,12 +36,12 @@ public class UserController {
         return ResponseEntity.ok(category);
     }
 
-    @GetMapping("/user1")
-    public ResponseEntity<List<AppRole>> getUser1(){
-        System.out.println("user goi api la ydanh sach");
-        List<AppRole> user = appRoleRepository.findAll();
-        return ResponseEntity.ok(user);
-    }
+//    @GetMapping("/user1")
+//    public ResponseEntity<List<AppRole>> getUser1(){
+//        System.out.println("user goi api la ydanh sach");
+//        List<AppRole> user = appRoleRepository.findAll();
+//        return ResponseEntity.ok(user);
+//    }
 
     @GetMapping("/getalluser")
     public ResponseEntity<List<User>> getalluser(){

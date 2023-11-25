@@ -2,7 +2,7 @@ package com.example.streamserver.service;
 
 import com.example.streamserver.entity.AppRole;
 import com.example.streamserver.entity.User;
-import com.example.streamserver.repository.AppRoleRepository;
+//import com.example.streamserver.repository.AppRoleRepository;
 import com.example.streamserver.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final AppRoleRepository appRoleRepository;
+//    private final AppRoleRepository appRoleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -32,9 +32,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 //        Set<GrantedAuthority> authorities = new HashSet<>();
 //        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        System.out.println(user.getEmail()+user.getRoles().getRoleName());
+
+//        System.out.println(user.getEmail()+user.getRoles().getRoleName());
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRoles().getRoleName()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole()));
 //        Set<GrantedAuthority> authorities = user
 //                .getRoles()
 //                .stream()
@@ -48,7 +49,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    public List<AppRole> getAllRoles() {
-        return appRoleRepository.findAll();
-    }
+//    public List<AppRole> getAllRoles() {
+//        return appRoleRepository.findAll();
+//    }
 }

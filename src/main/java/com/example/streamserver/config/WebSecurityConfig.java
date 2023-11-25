@@ -47,11 +47,6 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-//    @Bean
-//    public AuthenticationManager authenticationManager() throws Exception {
-//        return authenticationConfiguration.getAuthenticationManager();
-//    }
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService customUserDetailsService) {
 
@@ -63,13 +58,7 @@ public class WebSecurityConfig {
 
         return new ProviderManager(providers);
     }
-//    @Bean
-//    public DaoAuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(customUserDetailsService);
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//        return authProvider;
-//    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -87,12 +76,11 @@ public class WebSecurityConfig {
                 }))
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(WHITE_LIST_URL).permitAll()
-                                .requestMatchers("/api/user/**").hasRole("USER")
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers(USER_LIST_URL).hasRole("USER")
+                                .requestMatchers(ADMIN_LIST_URL).hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout((logout) -> logout.permitAll());
-        ;
         return http.build();
     }
 }

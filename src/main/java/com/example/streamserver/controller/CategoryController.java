@@ -1,12 +1,9 @@
 package com.example.streamserver.controller;
 
 import com.example.streamserver.dto.CategoryDto;
-import com.example.streamserver.dto.RoleDto;
-import com.example.streamserver.entity.AppRole;
 import com.example.streamserver.entity.AuthResponse;
 import com.example.streamserver.entity.Category;
 import com.example.streamserver.repository.CategoryRepository;
-import com.example.streamserver.service.CategoryService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

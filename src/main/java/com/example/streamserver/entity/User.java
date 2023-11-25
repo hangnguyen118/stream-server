@@ -41,10 +41,13 @@ public class User {
     @Column(name="Enable", length = 1, nullable = false)
     private boolean enabled;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "roleId"))
-    private AppRole roles;
+    @Enumerated(EnumType.STRING)
+    private AppRole role;
+
+//    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    @JoinTable(name = "user_roles",
+//            joinColumns = @JoinColumn(name = "userId"),
+//            inverseJoinColumns = @JoinColumn(name = "roleId"))
+//    private AppRole roles;
 
 }

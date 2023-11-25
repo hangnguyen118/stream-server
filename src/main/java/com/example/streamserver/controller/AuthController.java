@@ -1,7 +1,6 @@
 package com.example.streamserver.controller;
 
 import com.example.streamserver.entity.*;
-import com.example.streamserver.repository.AppRoleRepository;
 import com.example.streamserver.repository.UserRepository;
 import com.example.streamserver.service.CustomUserDetailsService;
 import com.example.streamserver.service.JwtService;
@@ -29,7 +28,7 @@ public class AuthController {
     private final CustomUserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AppRoleRepository roleRepository;
+//    private final AppRoleRepository roleRepository;
     private final JwtService jwtService;
 
     @PostMapping("/login")
@@ -64,8 +63,7 @@ public class AuthController {
         user.setPhone(signUpDto.getPhone());
         user.setEnabled(true);
 
-        AppRole roles = roleRepository.findByRoleName("USER").get();
-        user.setRoles(roles);
+        user.setRole(AppRole.USER);
         userRepository.save(user);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
