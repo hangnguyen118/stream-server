@@ -31,16 +31,11 @@ public class VideoController {
     private final UserRepository userRepository;
     private final CustomUserDetailsService userDetailsService;
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<User>> getAllVideos() {
-//        List<User> videos = userDetailsService.getAllUsers();
-//        System.out.println(videos);
-//        if (videos.isEmpty()) {
-//            return ResponseEntity.noContent().build();
-//        } else {
-//            return ResponseEntity.ok(videos);
-//        }
-//    }
+    @GetMapping("/all")
+    public ResponseEntity<List<VideoDto>> getallvideor(){
+        List<VideoDto> videos = videoService.getAllVideos();
+        return ResponseEntity.ok(videos);
+    }
     @PostMapping("/add")
     public ResponseEntity<AuthResponse> addVideo(@RequestBody VideoDto videoDto, HttpServletResponse response){
         if(videoRepository.existsByTitle(videoDto.getTitle())){
@@ -67,16 +62,6 @@ public class VideoController {
             return ResponseEntity.badRequest().body(new AuthResponse("Không tìm thấy người dùng với email đã cung cấp"));
         }
     }
-
-//    @GetMapping(value = "/stream", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-//    @ResponseBody
-//    public ResponseEntity<ClassPathResource> streamVideo(@RequestParam(name = "sourceuri") String sourceUri) {
-//        ClassPathResource video = new ClassPathResource("videos\\"+sourceUri);
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-//                .body(video);
-//    }
     @GetMapping("/watch")
     public ResponseEntity<FileSystemResource> getVideo(@RequestParam(name = "sourceuri") String sourceUri) {
         String filePath = "D:\\NetBeansProjects\\stream-server\\src\\main\\resources\\videos\\"+sourceUri;
@@ -94,4 +79,5 @@ public class VideoController {
                 .contentType(MediaType.parseMediaType("video/mp4"))
                 .body(resource);
     }
+
 }

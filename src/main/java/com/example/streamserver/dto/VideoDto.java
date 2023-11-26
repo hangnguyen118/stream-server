@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @Data
 public class VideoDto {
+    private UUID id;
     private String title;
     private String sourceUri;
     private String preview;

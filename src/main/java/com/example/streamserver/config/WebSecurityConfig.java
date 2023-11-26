@@ -80,7 +80,9 @@ public class WebSecurityConfig {
                                 .requestMatchers(ADMIN_LIST_URL).hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout((logout) -> logout.permitAll());
+                .logout((logout) ->
+                        logout.logoutUrl("/api/auth/logout").permitAll().invalidateHttpSession(true).deleteCookies("accessToken").logoutSuccessUrl("/api/auth/userLogout")
+                );
         return http.build();
     }
 }

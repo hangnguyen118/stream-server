@@ -25,6 +25,7 @@ public class VideoService {
 
         for (Video video : videos) {
             VideoDto videoDto = new VideoDto();
+            videoDto.setId(video.getVideoId());
             videoDto.setTitle(video.getTitle());
             videoDto.setSourceUri(video.getSourceUri());
             videoDto.setPreview(video.getPreview());
